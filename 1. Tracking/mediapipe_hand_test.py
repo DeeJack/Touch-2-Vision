@@ -1,3 +1,7 @@
+"""
+    Mediapipe, from video to imgs
+"""
+
 import cv2
 import numpy as np
 import mediapipe
@@ -14,7 +18,8 @@ mp_drawing = mediapipe.solutions.drawing_utils
 
 video = cv2.VideoCapture('videos/video.mp4')
 save_name = "results/hand_" + "video.mp4"
-outputWriter = cv2.VideoWriter(save_name, cv2.VideoWriter_fourcc(*'mp4v'), 30, (int(video.get(3)), int(video.get(4))), False)
+# Ensure the output video is in color by setting the last parameter to True
+outputWriter = cv2.VideoWriter(save_name, cv2.VideoWriter_fourcc(*'mp4v'), 30, (int(video.get(3)), int(video.get(4))), True)
 N_GAUSS = 5
 BACKGROUND_THRESHOLD = 0.8
 NOISE_SIGMA = 1
@@ -25,6 +30,7 @@ min_area_threshold = 500
 max_area_threshold = 1500
 # mog_subtractor = cv2.bgsegm.createBackgroundSubtractorMOG(HISTORY, N_GAUSS, BACKGROUND_THRESHOLD, NOISE_SIGMA)
 # knn_subtractor = cv2.createBackgroundSubtractorKNN(history= HISTORY)
+count = 0
 
 while True:
     ret, frame = video.read()
@@ -57,10 +63,14 @@ while True:
             left, right = int(left * frame.shape[1]), int(right * frame.shape[1])
             top, bottom = int(top * frame.shape[0]), int(bottom * frame.shape[0])
             left, right, top, bottom = max(0, left - 50), min(frame.shape[1], right + 50), max(0, top - 50), min(frame.shape[0], bottom + 50)
+            # left, right, top, bottom = max(0, left + 50), min(frame.shape[1], right - 50), max(0, top + 50), min(frame.shape[0], bottom - 50)
+            
             # print(left, right, top, bottom)
             
             # Hide the hand region by drawing a rectangle over it
+            cv2.rectangle(frame, (left, bottom), (right, top), (255, 255, 255), -1)
             cv2.rectangle(mask, (left, bottom), (right, top), (255, 255, 255), -1)
+            
     # if results.multi_hand_landmarks:
     #     for hand_landmarks in results.multi_hand_landmarks:
     #         for landmark in hand_landmarks.landmark:
@@ -69,10 +79,14 @@ while True:
             # mp_drawing.draw_landmarks(frame, hand_landmarks, mp_hands.HAND_CONNECTIONS)
     
     # Display the frame with hand landmarks
-    cv2.imshow('Hand Recognition', frame)
-    cv2.imshow('asd', mask)
+    # cv2.imshow('Hand Recognition', frame)
+    # cv2.imshow('asd', frame_rgb)
     
-    outputWriter.write(mask)
+    outputWriter.write(frame)
+    
+    cv2.imwrite(f"masks/frame_{count:0000}.png", mask)
+    
+    count += 1
     
     # frame_greyscale = cv2.cvtColor(frame, cv2.COLOR_RGB2GRAY)
     # foreground_mask = mog_subtractor.apply(frame_greyscale, learningRate=ALPHA)

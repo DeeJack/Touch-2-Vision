@@ -1,3 +1,8 @@
+"""
+    Trying to isolate the hand using colors, based on a research:
+    https://arxiv.org/ftp/arxiv/papers/1708/1708.02694.pdf
+"""
+
 import cv2
 import numpy as np
 

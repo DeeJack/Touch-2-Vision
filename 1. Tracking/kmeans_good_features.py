@@ -2,6 +2,11 @@ import cv2
 import numpy as np
 
 
+"""
+    Tried using optical flow, and then segmentate using kmeans, but didn't work well.
+"""
+
+
 def calculate_optical_flow(prev_frame, curr_frame):
     prev_gray = cv2.cvtColor(prev_frame, cv2.COLOR_BGR2GRAY)
     curr_gray = cv2.cvtColor(curr_frame, cv2.COLOR_BGR2GRAY)

@@ -1,3 +1,8 @@
+"""
+    Another attempt based on https://arxiv.org/ftp/arxiv/papers/1708/1708.02694.pdf
+    Didn't work.
+"""
+
 import cv2
 import numpy as np
 

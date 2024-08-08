@@ -1,6 +1,10 @@
 import cv2 as cv
 import numpy as np
 
+"""
+    LK Optical Flow  with Good Features to Track (not too bad until the wall)
+"""
+
 # Parameters for Shi-Tomasi corner detection
 feature_params = dict(maxCorners=300, qualityLevel=0.2, minDistance=2, blockSize=7)
 # Parameters for Lucas-Kanade optical flow
@@ -22,6 +26,7 @@ prev_gray = cv.cvtColor(first_frame, cv.COLOR_BGR2GRAY)
 prev = cv.goodFeaturesToTrack(prev_gray, mask=None, **feature_params)
 # Creates an image filled with zero intensities with the same dimensions as the frame - for later drawing purposes
 mask = np.zeros_like(first_frame)
+count = 0
 
 while cap.isOpened():
     # ret = a boolean return value from getting the frame, frame = the current frame being projected in the video
@@ -56,6 +61,9 @@ while cap.isOpened():
     prev = good_new.reshape(-1, 1, 2)
     # Opens a new window and displays the output frame
     cv.imshow("sparse optical flow", output)
+    if count % 10 == 0:
+        mask = np.zeros_like(first_frame)
+    count += 1
     # Frames are read by intervals of 10 milliseconds. The programs breaks out of the while loop when the user presses the 'q' key
     if cv.waitKey(10) & 0xFF == ord("q"):
         break

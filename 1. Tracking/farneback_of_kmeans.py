@@ -1,6 +1,10 @@
 import numpy as np
 import cv2 as cv
 
+"""
+    Farneback optical flow with k-means clustering
+"""
+
 cap = cv.VideoCapture(cv.samples.findFile("videos/video.mp4"))
 ret, frame1 = cap.read()
 previousFrame = cv.cvtColor(frame1, cv.COLOR_BGR2GRAY)

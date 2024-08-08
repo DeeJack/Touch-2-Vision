@@ -1,3 +1,7 @@
+"""
+    Trying Adaptive Background Subtraction
+"""
+
 import numpy as np
 import cv2
 

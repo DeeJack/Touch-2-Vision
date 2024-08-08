@@ -1,2 +1,11 @@
 .conda/*
 .conda/
+frames/
+frames/*
+masks/
+masks/*
+results/
+results/*
+*.mp4
+input/
+input/*

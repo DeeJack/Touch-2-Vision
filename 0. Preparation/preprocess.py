@@ -1,6 +1,9 @@
 import cv2
 import os
 
+"""
+    Resize and extract frames
+"""
 
 def load_videos(videos_path: str):
     """

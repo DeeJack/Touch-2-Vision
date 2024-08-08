@@ -1,3 +1,7 @@
+"""
+    Test MediaPipe for hand detection, use boundaries to create a rectangle
+"""
+
 import cv2
 import mediapipe as mp
 import numpy as np

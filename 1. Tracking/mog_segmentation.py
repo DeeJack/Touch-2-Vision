@@ -1,9 +1,13 @@
+"""
+    Trying to use Mixture Of Gaussians + connectedComponentsWithStats
+    https://pyimagesearch.com/2021/02/22/opencv-connected-component-labeling-and-analysis/
+    
+    Connected components is basically blob extraction, region labeling. Used for segmentation
+"""
+
 import cv2
 import numpy as np
 import mediapipe
-from mediapipe.tasks import python
-from mediapipe.tasks.python import vision
-
 
 # Initialize MediaPipe Hands module
 mp_hands = mediapipe.solutions.hands

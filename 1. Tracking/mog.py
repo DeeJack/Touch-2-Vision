@@ -1,3 +1,7 @@
+"""
+    Only MoG
+"""
+
 import cv2
 
 video = cv2.VideoCapture("videos/video.mp4")

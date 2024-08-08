@@ -1,6 +1,10 @@
 import cv2 as cv
 import numpy as np
 
+"""
+    Kalman filter, don't know how to use it
+"""
+
 cap = cv.VideoCapture(cv.samples.findFile("videos/video.mp4"))
 ret, frame1 = cap.read()
 firstFrame = cv.cvtColor(frame1, cv.COLOR_BGR2GRAY)
