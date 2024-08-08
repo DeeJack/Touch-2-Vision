@@ -11,4 +11,4 @@ After doing that:
 
 - [ ] From the object profile, generate the 3D object using optical flow
 
-More information in [presentation.pdf](presentation.pdf), [guidelines.pdf](guidelines.pdf).
+More information in [presentation.pdf](https://github.com/DeeJack/Touch-2-Vision/blob/main/presentation.pdf), [guidelines.pdf](https://github.com/DeeJack/Touch-2-Vision/blob/main/guidelines.pdf).
