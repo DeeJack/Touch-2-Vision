@@ -5,7 +5,8 @@
 import numpy as np
 import cv2
 
-video = cv2.VideoCapture('videos/video.mp4')
+video = cv2.VideoCapture('./videos/video.mp4')
+outputWriter = cv2.VideoWriter('./results/adaptive_back_sub.mp4', cv2.VideoWriter_fourcc(*'mp4v'), 30, (int(video.get(3)), int(video.get(4))), True)
 frames = []
 N = 10
 t = 0
@@ -38,5 +39,8 @@ while True:
         cv2.imshow('dsa', frame_greyscale)
         cv2.imshow('background', background)
         cv2.imshow('foreground', frame_diff_thresh)
+        frame_rgb = cv2.cvtColor(frame_diff_thresh, cv2.COLOR_GRAY2RGB)
+        outputWriter.write(frame_rgb)
         cv2.waitKey(1)
     t += 1
+outputWriter.release()

@@ -90,4 +90,4 @@ while True:
             cv2.imshow("Image", new_img)
             cv2.imshow("Individual Component", component)
             cv2.imshow("Filtered Components", output)
-    cv2.waitKey(1)
+            cv2.waitKey(1)

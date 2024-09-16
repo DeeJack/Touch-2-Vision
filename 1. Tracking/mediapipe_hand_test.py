@@ -17,9 +17,9 @@ hands = mp_hands.Hands(min_detection_confidence=0.2, min_tracking_confidence=0.2
 mp_drawing = mediapipe.solutions.drawing_utils
 
 video = cv2.VideoCapture('videos/video.mp4')
-save_name = "results/hand_" + "video.mp4"
 # Ensure the output video is in color by setting the last parameter to True
-outputWriter = cv2.VideoWriter(save_name, cv2.VideoWriter_fourcc(*'mp4v'), 30, (int(video.get(3)), int(video.get(4))), True)
+outputWriter = cv2.VideoWriter("results/mediapipe.mp4", cv2.VideoWriter_fourcc(*'mp4v'), 30, (int(video.get(3)), int(video.get(4))), True)
+maskWriter = cv2.VideoWriter("results/mediapipe_mask.mp4", cv2.VideoWriter_fourcc(*'mp4v'), 30, (int(video.get(3)), int(video.get(4))), True)
 N_GAUSS = 5
 BACKGROUND_THRESHOLD = 0.8
 NOISE_SIGMA = 1
@@ -30,9 +30,12 @@ min_area_threshold = 500
 max_area_threshold = 1500
 # mog_subtractor = cv2.bgsegm.createBackgroundSubtractorMOG(HISTORY, N_GAUSS, BACKGROUND_THRESHOLD, NOISE_SIGMA)
 # knn_subtractor = cv2.createBackgroundSubtractorKNN(history= HISTORY)
-count = 0
+count = 1
+last_mask = None
 
-while True:
+MAX_FRAMES = 2000
+
+while True and count < MAX_FRAMES:
     ret, frame = video.read()
     
     if not ret:
@@ -70,6 +73,11 @@ while True:
             # Hide the hand region by drawing a rectangle over it
             cv2.rectangle(frame, (left, bottom), (right, top), (255, 255, 255), -1)
             cv2.rectangle(mask, (left, bottom), (right, top), (255, 255, 255), -1)
+            last_mask = mask
+    elif last_mask is None:
+        pass
+    else:
+        mask = last_mask
             
     # if results.multi_hand_landmarks:
     #     for hand_landmarks in results.multi_hand_landmarks:
@@ -82,9 +90,13 @@ while True:
     # cv2.imshow('Hand Recognition', frame)
     # cv2.imshow('asd', frame_rgb)
     
-    outputWriter.write(frame)
+    # Write the videos
+    # outputWriter.write(frame)
+    # mask = cv2.cvtColor(mask, cv2.COLOR_GRAY2BGR)
+    # maskWriter.write(mask)
     
-    cv2.imwrite(f"masks/frame_{count:0000}.png", mask)
+    cv2.imwrite(f"results/masks/frame_{count:0000}.png", mask)
+    cv2.imwrite(f"results/frames/frame_{count:0000}.png", frame_rgb)
     
     count += 1
     
@@ -108,4 +120,6 @@ while True:
     # # Display the result
     # cv2.imshow('Foreground Segmentation', frame)
     cv2.waitKey(1)
+outputWriter.release()
+video.release()
 outputWriter.release()

@@ -7,7 +7,7 @@ import cv2
 import numpy as np
 
 # Initialize video capture
-cap = cv2.VideoCapture("videos/video.mp4")
+video = cv2.VideoCapture("videos/video.mp4")
 
 """
     Human Skin Detection Using RGB, HSV And Ycbcr Color Models https://arxiv.org/ftp/arxiv/papers/1708/1708.02694.pdf
@@ -44,10 +44,11 @@ upper_skin_hsv = np.array([20, 150, 255], dtype=np.uint8)
 
 # Initialize previous frame
 prev_frame = None
+outputWriter = cv2.VideoWriter('./results/color_based.mp4', cv2.VideoWriter_fourcc(*'mp4v'), 30, (int(video.get(3)), int(video.get(4))), True)
 
 while True:
     # Capture frame-by-frame
-    ret, frame = cap.read()
+    ret, frame = video.read()
     if not ret:
         break
 
@@ -89,11 +90,13 @@ while True:
     # Display the resulting frame
     cv2.imshow('Frame', frame)
     cv2.imshow('Mask', mask)
+    outputWriter.write(frame)
 
     # Break the loop if 'q' is pressed
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
 
 # Release the capture
-cap.release()
+video.release()
+outputWriter.release()
 cv2.destroyAllWindows()

@@ -17,6 +17,7 @@ mog_options = {"history": 100, "varThreshold": 16, "detectShadows": False}
 mog_subtractor = cv.createBackgroundSubtractorMOG2(**mog_options)
 
 video = cv.VideoCapture(video)
+outputWriter = cv.VideoWriter('./results/colors_contours.mp4', cv.VideoWriter_fourcc(*'mp4v'), 30, (int(video.get(3)), int(video.get(4))), True)
 
 # Area threshold for the contours
 min_area = 1600
@@ -94,6 +95,7 @@ while video.isOpened():
             continue
         print('Hand found!')
         cv.imshow('Hand', skin_mask)
+        
 
         # mean_color = np.mean(roi, axis=(0, 1))
         # std_color = np.std(roi, axis=(0, 1))
@@ -138,7 +140,11 @@ while video.isOpened():
 
     cv.imshow("Original", frame)
     cv.imshow("Frame", fg_mask)
+    fg_mask = cv.cvtColor(fg_mask, cv.COLOR_GRAY2BGR)
+    outputWriter.write(fg_mask)
     # plt.show()
 
     if cv.waitKey(30) & 0xFF == ord("q"):  # ESC key
         break
+outputWriter.release()
+video.release()

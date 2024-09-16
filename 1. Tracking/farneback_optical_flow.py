@@ -5,14 +5,15 @@
 import numpy as np
 import cv2 as cv
 
-cap = cv.VideoCapture(cv.samples.findFile("videos/video.mp4"))
-ret, frame1 = cap.read()
+video = cv.VideoCapture(cv.samples.findFile("videos/video.mp4"))
+outputWriter = cv.VideoWriter('./results/farneback_optical_flow.mp4', cv.VideoWriter_fourcc(*'mp4v'), 30, (int(video.get(3)), int(video.get(4))), True)
+ret, frame1 = video.read()
 previousFrame = cv.cvtColor(frame1, cv.COLOR_BGR2GRAY)
 hsv = np.zeros_like(frame1)
 hsv[..., 1] = 255
 flow = None
 while True:
-    ret, frame2 = cap.read()
+    ret, frame2 = video.read()
     if not ret:
         print("No frames grabbed!")
         break
@@ -36,6 +37,8 @@ while True:
     #     cv.drawContours(next_frame, contour, -1, (0, 255, 0), 3)
     
     cv.imshow("frame", overlay)
+    outputWriter.write(overlay)
+    
     # cv.imshow("frame2", hsv)
     keyPressed = cv.waitKey(1) & 0xFF
     if keyPressed == ord("q"):
@@ -46,3 +49,5 @@ while True:
     previousFrame = next_frame_gray
 
 cv.destroyAllWindows()
+outputWriter.release()
+video.release()

@@ -14,11 +14,12 @@ lk_params = dict(
     criteria=(cv.TERM_CRITERIA_EPS | cv.TERM_CRITERIA_COUNT, 10, 0.03),
 )
 # The video feed is read in as a VideoCapture object
-cap = cv.VideoCapture("videos/video.mp4")
+video = cv.VideoCapture("videos/video.mp4")
+outputWriter = cv.VideoWriter('./results/flow_good_features.mp4', cv.VideoWriter_fourcc(*'mp4v'), 30, (int(video.get(3)), int(video.get(4))), True)
 # Variable for color to draw optical flow track
 color = (0, 255, 0)
 # ret = a boolean return value from getting the frame, first_frame = the first frame in the entire video sequence
-ret, first_frame = cap.read()
+ret, first_frame = video.read()
 # Converts frame to grayscale because we only need the luminance channel for detecting edges - less computationally expensive
 prev_gray = cv.cvtColor(first_frame, cv.COLOR_BGR2GRAY)
 # Finds the strongest corners in the first frame by Shi-Tomasi method - we will track the optical flow for these corners
@@ -28,9 +29,9 @@ prev = cv.goodFeaturesToTrack(prev_gray, mask=None, **feature_params)
 mask = np.zeros_like(first_frame)
 count = 0
 
-while cap.isOpened():
+while video.isOpened():
     # ret = a boolean return value from getting the frame, frame = the current frame being projected in the video
-    ret, frame = cap.read()
+    ret, frame = video.read()
     # Converts each frame to grayscale - we previously only converted the first frame to grayscale
     gray = cv.cvtColor(frame, cv.COLOR_BGR2GRAY)
     # Calculates sparse optical flow by Lucas-Kanade method
@@ -61,6 +62,7 @@ while cap.isOpened():
     prev = good_new.reshape(-1, 1, 2)
     # Opens a new window and displays the output frame
     cv.imshow("sparse optical flow", output)
+    outputWriter.write(output)
     if count % 10 == 0:
         mask = np.zeros_like(first_frame)
     count += 1
@@ -68,5 +70,6 @@ while cap.isOpened():
     if cv.waitKey(10) & 0xFF == ord("q"):
         break
 # The following frees up resources and closes all windows
-cap.release()
+video.release()
+outputWriter.release()
 cv.destroyAllWindows()
