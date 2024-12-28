@@ -16,7 +16,7 @@ hands = mp_hands.Hands(min_detection_confidence=0.2, min_tracking_confidence=0.2
 # Initialize MediaPipe Drawing module for drawing landmarks
 mp_drawing = mediapipe.solutions.drawing_utils
 
-frames_dir = 'frames/'
+frames_dir = '../frames/'
 count = 0
 
 while True:
@@ -57,7 +57,7 @@ while True:
             # Hide the hand region by drawing a rectangle over it
             cv.rectangle(mask, (left, bottom), (right, top), (255, 255, 255), -1)
             
-    cv.imwrite(f"masks/frame_{count:0000}.png", mask)
+    cv.imwrite(f"../masks/frame_{count:0000}.png", mask)
     
     count += 1
     cv.waitKey(1)
