@@ -1,3 +1,7 @@
+"""
+    Maps the frame from the inpainted video to the corresponding frame from the GelSight video, based on the timestamps.
+"""
+
 import numpy as np
 import os
 from pathlib import Path
@@ -25,8 +29,6 @@ gelsight_frames = gelsight_frames_folder.glob("*.jpg")
 
 inpainted_frames = sorted(inpainted_frames, key=lambda x: int(x.stem.split('_')[1].replace('.jpg', '')))
 gelsight_frames = sorted(gelsight_frames, key=lambda x: int(x.stem.split('_')[1].replace('.jpg', '')))
-
-print(f"Inpainted frames: {inpainted_frames}")
 
 # Extract frame indices from the inpainted frame filenames (assumes format 'frame_{count:0000}.jpg')
 inpainted_indices = [
