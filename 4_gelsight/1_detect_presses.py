@@ -1,20 +1,19 @@
 """
-    Detect at which frames the user pressed on the GelSight sensor in the video,
-    based on Optical Flow, the magnitude of the flow, and a threshold value.
+    Uses MoG (Mixture of Gaussians) for background subtraction to get the profile.
+    Uses Farneback's optical flow to detect presses.
 """
 
 import cv2
 import numpy as np
 
-def detect_press(video_path, threshold=0.5):
+
+def detect_press_with_bg_subtraction(video_path, threshold=0.5):
     cap = cv2.VideoCapture(video_path)
 
-    # Check if video opened successfully
     if not cap.isOpened():
         print("Error: Cannot open video.")
         return
 
-    # Read the first frame
     ret, prev_frame = cap.read()
     if not ret:
         print("Error: Cannot read video frames.")
@@ -46,12 +45,9 @@ def detect_press(video_path, threshold=0.5):
             motion_detected = True
             print("Press detected at frame:", int(cap.get(cv2.CAP_PROP_POS_FRAMES)))
 
-        # Display the frame for visualization
         cv2.imshow("Frame", frame)
-        cv2.imshow("Optical Flow Magnitude", cv2.normalize(mag, None, 0, 255, cv2.NORM_MINMAX))
 
-        # Exit on 'q' key
-        if cv2.waitKey(1) & 0xFF == ord('q'):
+        if cv2.waitKey(1) & 0xFF == ord("q"):
             break
 
         prev_gray = gray
@@ -64,6 +60,6 @@ def detect_press(video_path, threshold=0.5):
     else:
         print("No press detected in the video.")
 
-# Example usage
-video_path = "videos/20220607_133934/gelsight.mp4"  # Replace with your video file path
-detect_press(video_path, threshold=0.5)
+
+video_path = "videos/20220607_133934/gelsight.mp4"
+detect_press_with_bg_subtraction(video_path, threshold=0.5)
