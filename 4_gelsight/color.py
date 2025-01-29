@@ -20,7 +20,7 @@ def process_gelsight_video_color_masking(video_path):
             break
 
         lower_black = np.array([0, 0, 0], dtype=np.uint8)
-        upper_dark_gray = np.array([100, 100, 100], dtype=np.uint8)
+        upper_dark_gray = np.array([100, 100, 100], dtype=np.uint8)  # Adjusted upper limit
 
         # 1. Create a mask for the black and dark gray regions
         mask = cv2.inRange(frame, lower_black, upper_dark_gray)
@@ -36,22 +36,22 @@ def process_gelsight_video_color_masking(video_path):
 
         # 4. Convert the masked frame to grayscale
         gray_masked = cv2.cvtColor(masked_frame, cv2.COLOR_BGR2GRAY)
-
+        
         # 5. Threshold the grayscale masked frame to create a binary profile
-        _, object_profile = cv2.threshold(gray_masked, 10, 255, cv2.THRESH_BINARY)
+        _, object_profile = cv2.threshold(gray_masked, 0, 255, cv2.THRESH_BINARY)
 
-        kernel = np.ones((5, 5), np.uint8)
-        morphed = cv2.morphologyEx(object_profile, cv2.MORPH_OPEN, kernel)
-        morphed = cv2.morphologyEx(morphed, cv2.MORPH_CLOSE, kernel)
+        # kernel = np.ones((5, 5), np.uint8)
+        # morphed = cv2.morphologyEx(object_profile, cv2.MORPH_OPEN, kernel)
+        # morphed = cv2.morphologyEx(morphed, cv2.MORPH_CLOSE, kernel)
 
-        object_profiles.append(morphed)
+        object_profiles.append(object_profile)
 
         cv2.imshow("Original Frame", frame)
         cv2.imshow("Black/Dark Gray Mask", mask)
         cv2.imshow("Inverted Mask", mask_inv)
         cv2.imshow("Masked Frame", masked_frame)
         cv2.imshow("Grayscale Masked", gray_masked)
-        cv2.imshow("Object Profile (Color Masking)", morphed)
+        cv2.imshow("Object Profile (Color Masking)", object_profile)
         if cv2.waitKey(50) & 0xFF == ord("q"):
             break
 

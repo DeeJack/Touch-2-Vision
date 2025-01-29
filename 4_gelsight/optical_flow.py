@@ -16,7 +16,7 @@ def process_gelsight_video_optical_flow(video_path):
     previous_frame_gray = None
     count = 0
 
-    while count < 200:
+    while count < 100:
         ret, frame = cap.read()
         if not ret:
             break
