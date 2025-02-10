@@ -17,7 +17,13 @@ hands = mp_hands.Hands()
 mp_drawing = mediapipe.solutions.drawing_utils
 
 video = cv2.VideoCapture("videos/video.mp4")
-outputWriter = cv2.VideoWriter("results/mog2.mp4", cv2.VideoWriter_fourcc(*'mp4v'), 30, (int(video.get(3)), int(video.get(4))), True)
+outputWriter = cv2.VideoWriter(
+    "results/mog2.mp4",
+    cv2.VideoWriter_fourcc(*"mp4v"),
+    30,
+    (int(video.get(3)), int(video.get(4))),
+    True,
+)
 N_GAUSS = 5
 BACKGROUND_THRESHOLD = 0.8
 NOISE_SIGMA = 1
@@ -45,9 +51,7 @@ while True:
     _, thresh = cv2.threshold(foreground_mask, 110, 200, cv2.THRESH_BINARY)
 
     # Find contours in the foreground mask
-    contours, _ = cv2.findContours(
-        thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE
-    )
+    contours, _ = cv2.findContours(thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
     # print(contours)
 
     # Filter contours based on area and other properties

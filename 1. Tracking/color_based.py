@@ -1,5 +1,5 @@
 """
-    Trying to isolate the hand using colors, based on a research:
+    Trying to isolate the hand using colors, based on a paper:
     https://arxiv.org/ftp/arxiv/papers/1708/1708.02694.pdf
 """
 
@@ -44,7 +44,13 @@ upper_skin_hsv = np.array([20, 150, 255], dtype=np.uint8)
 
 # Initialize previous frame
 prev_frame = None
-outputWriter = cv2.VideoWriter('./results/color_based.mp4', cv2.VideoWriter_fourcc(*'mp4v'), 30, (int(video.get(3)), int(video.get(4))), True)
+outputWriter = cv2.VideoWriter(
+    "./results/color_based.mp4",
+    cv2.VideoWriter_fourcc(*"mp4v"),
+    30,
+    (int(video.get(3)), int(video.get(4))),
+    True,
+)
 
 while True:
     # Capture frame-by-frame
@@ -61,7 +67,7 @@ while True:
     mask = cv2.inRange(hsv, lower_skin_hsv, upper_skin_hsv)
     # mask_rgb = cv2.inRange(rgb, lower_skin_rgb, upper_skin_rgb)
     # mask_ybcr = cv2.inRange(ycbcr, lower_skin_ycbcr, upper_skin_ycbcr)
-    
+
     # Combine the masks
     # mask = cv2.bitwise_and(mask_hsv, mask_rgb)
     # mask = cv2.bitwise_and(mask, mask_ybcr)
@@ -71,12 +77,18 @@ while True:
     mask = cv2.dilate(mask, None, iterations=2)
 
     # Find contours in the mask
-    contours, _ = cv2.findContours(mask.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-    
+    contours, _ = cv2.findContours(
+        mask.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE
+    )
+
     # Filter for area
     min_area = 1000
     max_area = 10000
-    contours = [c for c in contours if cv2.contourArea(c) > min_area and cv2.contourArea(c) < max_area]
+    contours = [
+        c
+        for c in contours
+        if cv2.contourArea(c) > min_area and cv2.contourArea(c) < max_area
+    ]
 
     # If contours are found
     if contours:
@@ -88,12 +100,12 @@ while True:
         cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
 
     # Display the resulting frame
-    cv2.imshow('Frame', frame)
-    cv2.imshow('Mask', mask)
+    cv2.imshow("Frame", frame)
+    cv2.imshow("Mask", mask)
     outputWriter.write(frame)
 
     # Break the loop if 'q' is pressed
-    if cv2.waitKey(1) & 0xFF == ord('q'):
+    if cv2.waitKey(1) & 0xFF == ord("q"):
         break
 
 # Release the capture

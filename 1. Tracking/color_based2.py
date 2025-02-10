@@ -107,13 +107,13 @@ while True:
             #     and pixel_ycbcr[2] <= -2.2857 * pixel_ycbcr[1] + 432.85
             # ):
             #     skin_mask[i, j] = 255
-                
+
     # Apply a series of morphological operations to remove noise
     skin_mask = cv2.erode(skin_mask, None, iterations=2)
     skin_mask = cv2.dilate(skin_mask, None, iterations=2)
 
     cv2.imshow("Skin", skin_mask)
-    cv2.imshow('Original', frame)
+    cv2.imshow("Original", frame)
     # Threshold the HSV image to get only skin color
     # mask = cv2.inRange(hsv, lower_skin_hsv, upper_skin_hsv)
     # mask_rgb = cv2.inRange(rgb, lower_skin_rgb, upper_skin_rgb)

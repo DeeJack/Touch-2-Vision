@@ -15,7 +15,13 @@ lk_params = dict(
 )
 # The video feed is read in as a VideoCapture object
 video = cv.VideoCapture("videos/video.mp4")
-outputWriter = cv.VideoWriter('./results/flow_good_features.mp4', cv.VideoWriter_fourcc(*'mp4v'), 30, (int(video.get(3)), int(video.get(4))), True)
+outputWriter = cv.VideoWriter(
+    "./results/flow_good_features.mp4",
+    cv.VideoWriter_fourcc(*"mp4v"),
+    30,
+    (int(video.get(3)), int(video.get(4))),
+    True,
+)
 # Variable for color to draw optical flow track
 color = (0, 255, 0)
 # ret = a boolean return value from getting the frame, first_frame = the first frame in the entire video sequence

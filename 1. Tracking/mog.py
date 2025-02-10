@@ -5,7 +5,13 @@
 import cv2
 
 video = cv2.VideoCapture("videos/video.mp4")
-outputWriter = cv2.VideoWriter('./results/mog.mp4', cv2.VideoWriter_fourcc(*'mp4v'), 30, (int(video.get(3)), int(video.get(4))), True)
+outputWriter = cv2.VideoWriter(
+    "./results/mog.mp4",
+    cv2.VideoWriter_fourcc(*"mp4v"),
+    30,
+    (int(video.get(3)), int(video.get(4))),
+    True,
+)
 N_GAUSS = 5
 BACKGROUND_THRESHOLD = 0.8
 NOISE_SIGMA = 1

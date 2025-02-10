@@ -19,9 +19,7 @@ def calculate_optical_flow(prev_frame, curr_frame):
     )
 
     # Calculate optical flow
-    p1, st, err = cv2.calcOpticalFlowPyrLK(
-        prev_gray, curr_gray, p0, None, **lk_params
-    )
+    p1, st, err = cv2.calcOpticalFlowPyrLK(prev_gray, curr_gray, p0, None, **lk_params)
 
     # Select good points
     good_new = p1[st == 1]

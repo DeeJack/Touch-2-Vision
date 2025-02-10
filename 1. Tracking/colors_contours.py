@@ -17,7 +17,13 @@ mog_options = {"history": 100, "varThreshold": 16, "detectShadows": False}
 mog_subtractor = cv.createBackgroundSubtractorMOG2(**mog_options)
 
 video = cv.VideoCapture(video)
-outputWriter = cv.VideoWriter('./results/colors_contours.mp4', cv.VideoWriter_fourcc(*'mp4v'), 30, (int(video.get(3)), int(video.get(4))), True)
+outputWriter = cv.VideoWriter(
+    "./results/colors_contours.mp4",
+    cv.VideoWriter_fourcc(*"mp4v"),
+    30,
+    (int(video.get(3)), int(video.get(4))),
+    True,
+)
 
 # Area threshold for the contours
 min_area = 1600
@@ -61,7 +67,7 @@ while video.isOpened():
 
         # Extract region of interest from the original frame
         roi = frame[y : y + h, x : x + w]
-        
+
         # Convert frame to HSV color space
         hsv = cv.cvtColor(roi, cv.COLOR_BGR2HSV)
         rgba = cv.cvtColor(roi, cv.COLOR_BGR2RGBA)
@@ -90,16 +96,15 @@ while video.isOpened():
                     and pixel_hsv[1] <= 173.4
                 ):
                     skin_mask[i, j] = 255
-        
+
         if not skin_mask.any():
             continue
-        print('Hand found!')
-        cv.imshow('Hand', skin_mask)
-        
+        print("Hand found!")
+        cv.imshow("Hand", skin_mask)
 
         # mean_color = np.mean(roi, axis=(0, 1))
         # std_color = np.std(roi, axis=(0, 1))
-        
+
         # print('Mean color:', mean_color, 'Std color:', std_color)
 
         # data = np.vstack((mean_color, std_color))

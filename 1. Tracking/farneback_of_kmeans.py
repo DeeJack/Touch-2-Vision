@@ -28,7 +28,7 @@ while True:
     # Calculate the mean magnitude and angle
     mean_mag = np.mean(magnitudes)
     mean_angle = np.mean(angles)
-    
+
     height, width, _ = flow.shape
     flow_reshaped = flow.reshape((-1, 2))
 
@@ -43,24 +43,24 @@ while True:
         10,
         cv.KMEANS_RANDOM_CENTERS,
     )
-    
+
     # Reshape labels back to the original image shape to visualize the clustering result
     labels_image = labels.reshape((height, width))
 
     # Optionally, create a mask for a specific cluster (e.g., cluster 0)
     background = np.where(labels_image == 1, 255, 0).astype(np.uint8)
     foreground = np.where(labels_image == 0, 255, 0).astype(np.uint8)
-    
+
     # Visualize the mask
-    cv.imshow('Background', background)
-    cv.imshow('Foreground', foreground)
+    cv.imshow("Background", background)
+    cv.imshow("Foreground", foreground)
 
     # Find regions where the magnitude of motion is significantly different from the mean
     mag_threshold = mean_mag * 2
 
     # Create a mask where the magnitude of motion is significantly different from the mean
     foreground_mask = magnitudes > (mean_mag + mag_threshold)
-    
+
     foreground_mask = foreground_mask.astype(np.float32)
 
     # Convert the boolean mask to an 8-bit image
@@ -70,8 +70,6 @@ while True:
     foreground_mask = cv.erode(foreground_mask, None, iterations=3)
     foreground_mask = cv.dilate(foreground_mask, None, iterations=3)
 
-
-    
     # Optionally, visualize the optical flow
     # hsv = np.zeros_like(frame1)
     # hsv[..., 1] = 255
