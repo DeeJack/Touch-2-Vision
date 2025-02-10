@@ -21,20 +21,20 @@ def process_gelsight_video_simple_blob(video_path):
 
     # Filter by Area.
     params.filterByArea = True
-    params.minArea = 50  # Adjust based on your marker size
-    params.maxArea = 500  # Adjust based on your marker size
+    params.minArea = 50
+    params.maxArea = 500
 
     # Filter by Circularity
     params.filterByCircularity = True
-    params.minCircularity = 0.6  # Adjust, lower values allow more deformation
+    params.minCircularity = 0.6
 
     # Filter by Convexity
     params.filterByConvexity = True
-    params.minConvexity = 0.7  # Adjust
+    params.minConvexity = 0.7
 
     # Filter by Inertia
     params.filterByInertia = True
-    params.minInertiaRatio = 0.3  # Adjust
+    params.minInertiaRatio = 0.3
 
     # Create a detector with the parameters
     detector = cv2.SimpleBlobDetector_create(params)
@@ -145,9 +145,7 @@ def process_gelsight_video_profile(video_path):
         frame_diff = cv2.absdiff(relaxed_frame_gray, compensated_frame_gray)
 
         # Threshold the difference image to create a binary mask
-        _, thresh = cv2.threshold(
-            frame_diff, 20, 255, cv2.THRESH_BINARY
-        )  # Adjust threshold value
+        _, thresh = cv2.threshold(frame_diff, 20, 255, cv2.THRESH_BINARY)
 
         kernel = np.ones((5, 5), np.uint8)
         morphed = cv2.morphologyEx(thresh, cv2.MORPH_CLOSE, kernel)

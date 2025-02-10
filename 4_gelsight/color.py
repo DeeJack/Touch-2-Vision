@@ -20,7 +20,9 @@ def process_gelsight_video_color_masking(video_path):
             break
 
         lower_black = np.array([0, 0, 0], dtype=np.uint8)
-        upper_dark_gray = np.array([100, 100, 100], dtype=np.uint8)  # Adjusted upper limit
+        upper_dark_gray = np.array(
+            [100, 100, 100], dtype=np.uint8
+        )  # Adjusted upper limit
 
         # 1. Create a mask for the black and dark gray regions
         mask = cv2.inRange(frame, lower_black, upper_dark_gray)
@@ -36,7 +38,7 @@ def process_gelsight_video_color_masking(video_path):
 
         # 4. Convert the masked frame to grayscale
         gray_masked = cv2.cvtColor(masked_frame, cv2.COLOR_BGR2GRAY)
-        
+
         # 5. Threshold the grayscale masked frame to create a binary profile
         _, object_profile = cv2.threshold(gray_masked, 0, 255, cv2.THRESH_BINARY)
 

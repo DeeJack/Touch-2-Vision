@@ -1,3 +1,7 @@
+"""
+    Similar to the previous one, but this one uses a more advanced preprocessing pipeline to enhance the image quality before contour extraction.
+"""
+
 import cv2
 import numpy as np
 
@@ -58,7 +62,7 @@ def extract_object_profile_v2(img, area_threshold=(5000, 50000), debug=False):
             continue
         circularity = 4 * np.pi * area / (perimeter**2)
 
-        if (area_threshold[0] < area < area_threshold[1]):
+        if area_threshold[0] < area < area_threshold[1]:
             valid_contours.append(cnt)
 
     if not valid_contours:
@@ -111,7 +115,6 @@ def extract_object_profile_v2(img, area_threshold=(5000, 50000), debug=False):
     return result
 
 
-# Usage
 inpaint_video = "videos/20220607_133934/gelsight.mp4"
 cap = cv2.VideoCapture(inpaint_video)
 
@@ -123,7 +126,7 @@ while frame_count < 150:
         break
     h, w = frame.shape[:2]
     frame_count += 1
-    print(frame_count)  
+    print(frame_count)
 
     result_frame = extract_object_profile_v2(
         frame,

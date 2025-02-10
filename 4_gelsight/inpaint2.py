@@ -1,3 +1,8 @@
+"""
+    Another attempt at inpainting the artifacts in the Gelsight images.
+    This script uses blob detection and inpainting to remove circular black artifacts from Gelsight images.
+"""
+
 import cv2
 import numpy as np
 
@@ -133,7 +138,7 @@ def remove_gelsight_artifacts(image, artifact_tracker):
     # Apply blurring to the mask
     blurred_mask = cv2.GaussianBlur(closed_mask, (5, 5), 0)
 
-    kernel = np.ones((3, 3), np.uint8)  # adjust kernel size
+    kernel = np.ones((3, 3), np.uint8)
     opened_gray = cv2.morphologyEx(
         blurred_mask, cv2.MORPH_OPEN, kernel
     )  # use opened_gray for blob detection
@@ -177,6 +182,8 @@ def process_video(video_path, output_path=None, display=False):
             break
 
         frame_count += 1
+        if frame_count % 100 == 0:
+            print(f"Processing frame {frame_count}")
 
         cleaned_frame = remove_gelsight_artifacts(frame, artifact_tracker)
 
@@ -206,6 +213,14 @@ def process_video(video_path, output_path=None, display=False):
 
 
 if __name__ == "__main__":
-    video_path = "videos/20220607_133934/gelsight.mp4"
-    output_video_path = "results/inpaint2.mp4"
-    process_video(video_path, output_video_path, display=False)
+    # video_path = "videos/20220607_133934/gelsight.mp4"
+    # output_video_path = "results/inpaint2.mp4"
+    # process_video(video_path, output_video_path, display=False)
+    frame_path = "C:/Users/loren/Downloads/gelsight - frame at 8m4s.jpg"
+    output_path = "results/inpaint2.jpg"
+    image = cv2.imread(frame_path)
+    artifact_tracker = ArtifactTracker(
+        alpha_stable=0.9, alpha_moving=0.3, movement_threshold=3
+    )
+    cleaned_image = remove_gelsight_artifacts(image, artifact_tracker)
+    cv2.imwrite(output_path, cleaned_image)

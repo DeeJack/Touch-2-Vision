@@ -1,10 +1,15 @@
+"""
+    Applies a series of image processing steps to extract the profile of an object in an image.
+    Such as noise reduction, contrast enhancement, edge-preserving smoothing, adaptive thresholding,
+    Then, uses contour detection and refinement to extract the object profile.
+"""
+
 import cv2
 import numpy as np
 
 
 def extract_object_profile(img):
     # Load image and convert to grayscale
-    #img = cv2.imread(image_path)
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
     # Preprocessing steps
@@ -69,7 +74,6 @@ def extract_object_profile(img):
     return result
 
 
-# Usage example
 inpaint_video = "results/inpaint2.mp4"
 cap = cv2.VideoCapture(inpaint_video)
 
@@ -78,7 +82,7 @@ while True:
     ret, frame = cap.read()
     if not ret:
         break
-        
+
     result_frame = extract_object_profile(frame)
     frames.append(result_frame)
 

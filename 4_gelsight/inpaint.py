@@ -1,3 +1,7 @@
+"""
+    Tries to inpaint the black artifacts in the Gelsight images.
+"""
+
 import cv2
 import numpy as np
 
@@ -66,7 +70,7 @@ def process_video(video_path, output_path=None, display=True):
         return
 
     if output_path:
-        fourcc = cv2.VideoWriter_fourcc(*"mp4v")  # Or use another codec
+        fourcc = cv2.VideoWriter_fourcc(*"mp4v")
         frame_width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
         frame_height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
         fps = int(cap.get(cv2.CAP_PROP_FPS))
@@ -100,11 +104,6 @@ def process_video(video_path, output_path=None, display=True):
 
 
 if __name__ == "__main__":
-    # Example usage
-    video_path = "videos/20220607_133934/gelsight.mp4"  # Replace with your video file
-    output_video_path = (
-        "results/gelsight_result.mp4"  # If None, the video is not saved.
-    )
-    process_video(
-        video_path, output_video_path, display=True
-    )  # if display=False no video will be shown
+    video_path = "videos/20220607_133934/gelsight.mp4"
+    output_video_path = "results/gelsight_result.mp4"
+    process_video(video_path, output_video_path, display=True)

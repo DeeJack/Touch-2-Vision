@@ -1,3 +1,7 @@
+"""
+    This one uses the LAB color space instead of gray scale
+"""
+
 import cv2
 import numpy as np
 from skimage.feature import local_binary_pattern
@@ -49,32 +53,32 @@ def extract_gelsight_profile(img, inpainted_img):
             continue
         # Get bounding box
         x, y, w, h = cv2.boundingRect(cnt)
-        
+
         # Calculate 20% margins
         margin_x = int(0.2 * w)
         margin_y = int(0.2 * h)
-        
+
         # Create a mask for the inner 60% region
         mask = np.zeros((h, w), dtype=np.uint8)
         cv2.drawContours(mask, [cnt], -1, 255, -1)
-        
+
         # Cut out the margins
         cut_cnt = cnt.copy()
         cut_cnt[:, 0, 0] = np.clip(cut_cnt[:, 0, 0], x + margin_x, x + w - margin_x)
         cut_cnt[:, 0, 1] = np.clip(cut_cnt[:, 0, 1], y + margin_y, y + h - margin_y)
-        
+
         # Only add the cut contour if it's still valid
         cut_area = cv2.contourArea(cut_cnt)
         if cut_area > 0:  # Ensure we still have a valid contour after cutting
             valid_contours.append(cut_cnt)
 
         # Shape compactness filter
-        #perimeter = cv2.arcLength(cnt, True)
-        #compactness = 4 * np.pi * area / (perimeter**2) if perimeter > 0 else 0
-        #if compactness < 0.2:  # Reject linear artifacts
+        # perimeter = cv2.arcLength(cnt, True)
+        # compactness = 4 * np.pi * area / (perimeter**2) if perimeter > 0 else 0
+        # if compactness < 0.2:  # Reject linear artifacts
         #    continue
 
-        #valid_contours.append(cnt)
+        # valid_contours.append(cnt)
 
     if not valid_contours:
         return img
@@ -88,19 +92,18 @@ def extract_gelsight_profile(img, inpainted_img):
     cv2.drawContours(mask, [hull], -1, 255, -1)
 
     # 11. Edge-preserving refinement
-    #refined = cv2.edgePreservingFilter(img, flags=1, sigma_s=50, sigma_r=0.4)
-    #result = cv2.bitwise_and(refined, refined, mask=mask)
+    # refined = cv2.edgePreservingFilter(img, flags=1, sigma_s=50, sigma_r=0.4)
+    # result = cv2.bitwise_and(refined, refined, mask=mask)
 
     # Draw boundary
     cv2.drawContours(inpainted_img, [hull], -1, (0, 255, 0), 2)
-    
+
     cv2.imshow("Contour", inpainted_img)
     cv2.waitKey(1)
 
     return inpainted_img
 
 
-# Usage
 video = "videos/20220607_133934/gelsight.mp4"
 inpainted_video = "results/inpaint2.mp4"
 cap = cv2.VideoCapture(video)
@@ -117,9 +120,7 @@ while frame_count < 150:
     frame_count += 1
     print(frame_count)
 
-    result_frame = extract_gelsight_profile(
-        frame, frame2
-    )
+    result_frame = extract_gelsight_profile(frame, frame2)
     frames.append(result_frame)
 
 cap.release()

@@ -80,18 +80,16 @@ def process_gelsight_video_hybrid(video_path):
         )
 
         # 7. Threshold the Masked Magnitude to get the Object Profile
-        _, thresh = cv2.threshold(
-            masked_magnitude, 1.0, 255, cv2.THRESH_BINARY
-        )  # Adjust threshold
+        _, thresh = cv2.threshold(masked_magnitude, 1.0, 255, cv2.THRESH_BINARY)
 
-        # 8. Optional: Apply Morphological Operations
+        # 8. Apply Morphological Operations
         kernel = np.ones((5, 5), np.uint8)
         morphed = cv2.morphologyEx(thresh, cv2.MORPH_CLOSE, kernel)
         morphed = cv2.morphologyEx(morphed, cv2.MORPH_OPEN, kernel)
 
         object_profiles.append(morphed)
 
-        # Optional: Display Intermediate and Final Results
+        # Display Intermediate and Final Results
         # cv2.imshow("Marker Mask", marker_mask)
         # cv2.imshow("Non-Marker Mask", non_marker_mask)
         # cv2.imshow("Optical Flow Magnitude", magnitude)
@@ -109,20 +107,21 @@ def process_gelsight_video_hybrid(video_path):
 
 
 if __name__ == "__main__":
-    video_path = "videos/20220607_133934/gelsight.mp4"  # Replace with the actual path to your video
+    video_path = "videos/20220607_133934/gelsight.mp4"
     object_profiles = process_gelsight_video_hybrid(video_path)
-
 
     if object_profiles:
         # Process each object profile to find and display contours
         for i, profile in enumerate(object_profiles):
             # 1. Find Contours
-            contours, hierarchy = cv2.findContours(profile, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+            contours, hierarchy = cv2.findContours(
+                profile, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE
+            )
 
-            # 2. Draw Contours on the Original Frame (Optional, but good for visualization)
-            # Load the corresponding original frame (you might need to adjust indexing)
+            # 2. Draw Contours on the Original Frame
+            # Load the corresponding original frame
             cap = cv2.VideoCapture(video_path)
-            cap.set(cv2.CAP_PROP_POS_FRAMES, i + 1)  # Set to the correct frame number
+            cap.set(cv2.CAP_PROP_POS_FRAMES, i + 1)
             ret, original_frame = cap.read()
             cap.release()
 
@@ -131,16 +130,18 @@ if __name__ == "__main__":
             #     cv2.drawContours(contour_frame, contours, -1, (0, 255, 0), 2)  # Draw in green
             #     cv2.imshow(f"Object Profile with Contours (Frame {i+1})", contour_frame)
 
-            # 3. Alternatively, Draw Contours on the Binary Profile
-            contour_profile = cv2.cvtColor(profile, cv2.COLOR_GRAY2BGR) # Convert to color to draw
+            # 3. Draw Contours on the Binary Profile
+            contour_profile = cv2.cvtColor(
+                profile, cv2.COLOR_GRAY2BGR
+            )  # Convert to color to draw
             cv2.drawContours(contour_profile, contours, -1, (0, 255, 0), 2)
             cv2.imshow(f"Contours", contour_profile)
 
-            if cv2.waitKey(50) & 0xFF == ord('q'):
+            if cv2.waitKey(50) & 0xFF == ord("q"):
                 break
         cv2.destroyAllWindows()
 
-        # Optional: Access and work with the contours
+        # Access and work with the contours
         # all_contours = []
         # for profile in object_profiles:
         #     contours, hierarchy = cv2.findContours(profile, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
