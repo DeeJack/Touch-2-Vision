@@ -1,3 +1,8 @@
+"""
+Apply monocular depth algorithm (MiDaS) to estimate the depth map, saving them to a folder.
+"""
+
+
 import torch
 import cv2
 import numpy as np
@@ -16,7 +21,10 @@ midas.eval()
 transform = midas_transforms.default_transform
 
 def estimate_depth(cropped_frame):
-    input_batch = transform(cropped_frame).to(device)
+    # Convert BGR to LAB color space
+    lab_frame = cv2.cvtColor(cropped_frame, cv2.COLOR_BGR2LAB)
+    
+    input_batch = transform(lab_frame).to(device)
 
     with torch.no_grad():
         prediction = midas(input_batch)
@@ -24,7 +32,7 @@ def estimate_depth(cropped_frame):
     prediction = torch.nn.functional.interpolate(
         prediction.unsqueeze(1),
         size=cropped_frame.shape[:2],
-        mode="bicubic",
+        mode="bilinear",
         align_corners=False,
     ).squeeze()
 
@@ -57,16 +65,17 @@ def analyze_depth_map(depth_map, mask):
     return profile
 
 # Process the frames to get depth maps
-frames_dir = 'frames'
-masks_dir = 'masks'
+frames_dir = 'inpainted_frames'
+masks_dir = 'masked_images'
 depth_maps_dir = 'depth_maps'
+cropped_depth_maps_dir = 'cropped_depth_maps'
 os.makedirs(depth_maps_dir, exist_ok=True)
 
-frame_files = sorted([os.path.join(frames_dir, f) for f in os.listdir(frames_dir) if f.endswith('.jpg')])
+frame_files = sorted([os.path.join(frames_dir, f) for f in os.listdir(frames_dir) if f.endswith('.jpg')], key=lambda x: int(x.split('_')[-1].split('.')[0]))
 mask_files = sorted([os.path.join(masks_dir, f) for f in os.listdir(masks_dir) if f.endswith('.png')])
 
 for i, (frame_file, mask_file) in enumerate(zip(frame_files, mask_files)):
-    print(f"Processing frame {i}...")
+    print(f"Processing frame {i} ({frame_file}, {mask_file})...")
     frame = cv2.imread(frame_file)
     mask = cv2.imread(mask_file, cv2.IMREAD_GRAYSCALE)
     # cropped_frame, cropped_mask, (x, y, w, h) = crop_to_mask(frame, mask)
@@ -79,7 +88,16 @@ for i, (frame_file, mask_file) in enumerate(zip(frame_files, mask_files)):
     depth_map = estimate_depth(frame)
     depth_map_normalized = cv2.normalize(depth_map, None, 0, 255, cv2.NORM_MINMAX)
     depth_map_normalized = depth_map_normalized.astype(np.uint8)
-    cv2.imwrite(os.path.join(depth_maps_dir, f'depth_map_{i:04d}.png'), depth_map_normalized)
+    # Apply colormap to create a colored visualization of depth
+    depth_map_colored = cv2.applyColorMap(depth_map_normalized, cv2.COLORMAP_JET)
+    
+    cv2.imwrite(os.path.join(depth_maps_dir, f'depth_map_{i:04d}.png'), depth_map)
+    
+    # Ensure mask and depth map have same dimensions
+    mask_resized = cv2.resize(mask, (depth_map_normalized.shape[1], depth_map_normalized.shape[0]))
+    cropped_depth_map = cv2.bitwise_and(depth_map_colored, depth_map_colored, mask=mask_resized)
+    
+    cv2.imwrite(os.path.join(cropped_depth_maps_dir, f'depth_map_{i:04d}.png'), cropped_depth_map)
 
     # profile = analyze_depth_map(depth_map_normalized, cropped_mask)
     # if profile:

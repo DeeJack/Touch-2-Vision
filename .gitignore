@@ -13,3 +13,5 @@ input/*
 *.png
 *.jpeg
 *.npy
+.venv/
+.vscode/
